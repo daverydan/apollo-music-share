@@ -7,18 +7,14 @@ import {
   Typography,
   CardActions,
   IconButton,
-  makeStyles
+  makeStyles,
 } from "@material-ui/core";
 import { PlayArrow, Save } from "@material-ui/icons";
+import { useQuery } from "@apollo/client";
+import { GET_SONGS } from "../graphql/queries";
 
 function SongList() {
-  let loading = false;
-
-  const song = {
-    title: "LÜNE",
-    artist: "MÖÖN",
-    thumbnail: "http://img.youtube.com/vi/--ZtUFsIgMk/0.jpg"
-  };
+  const { data, loading, error } = useQuery(GET_SONGS);
 
   if (loading) {
     return (
@@ -27,7 +23,7 @@ function SongList() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          marginTop: 50
+          marginTop: 50,
         }}
       >
         <CircularProgress />
@@ -35,33 +31,35 @@ function SongList() {
     );
   }
 
+  if (error) return <div>Error fetching songs</div>;
+
   return (
     <div>
-      {Array.from({ length: 10 }, () => song).map((song, i) => (
-        <Song key={i} song={song} />
+      {data.songs.map((song) => (
+        <Song key={song.id} song={song} />
       ))}
     </div>
   );
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
-    margin: theme.spacing(3)
+    margin: theme.spacing(3),
   },
   songInfoContainer: {
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   songInfo: {
     width: "100%",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   thumbnail: {
     objectFit: "cover",
     width: 140,
-    height: 140
-  }
+    height: 140,
+  },
 }));
 
 function Song({ song }) {
