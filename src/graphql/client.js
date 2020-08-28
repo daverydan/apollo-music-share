@@ -1,11 +1,10 @@
-import { ApolloClient, HttpLink } from "@apollo/client";
+import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const client = new ApolloClient({
+  cache: new InMemoryCache(),
   link: new HttpLink({
     uri: "https://main-firefly-29.hasura.app/v1/graphql",
   }),
-  // uri: "https://main-firefly-29.hasura.app/v1/graphql",
-  // cache: new InMemoryCache(),
 });
 
 export default client;
